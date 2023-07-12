@@ -1,72 +1,68 @@
-//Blogging App using Hooks
+import React, { useEffect } from "react";
+
+// Blogging App using Hooks
 export default function Blog(props) {
-    let { title, setTitle, content, setContent ,blogs,setBlogs } = props;
+  let { form, setForm, blogs, setBlogs } = props;
 
-    //Passing the synthetic event as argument to stop refreshing the page on submit
-    function handleSubmit(e) {
-        e.preventDefault();
-        setBlogs([{title,content},...blogs]);       
-        setTitle('');
-        setContent('');
-    }
 
-    return (
-        <>
-            {/* Heading of the page */}
-            <h1>Write a Blog!</h1>
 
-            {/* Division created to provide styling of section to the form */}
-            <div className="section">
+  function handleSubmit(e) {
+    e.preventDefault();
+    setForm({ title: "", content: "" }); // Clear the form state
+    setBlogs([{ title: form.title, content: form.content }, ...blogs]);
+  }
 
-                {/* Form for to write the blog */}
-                <form onSubmit={handleSubmit}>
+  return (
+    <>
+      <h1>Write a Blog!</h1>
 
-                    {/* Row component to create a row for first input field */}
-                    <Row label="Title">
-                        <input className="input"
-                            placeholder="Enter the Title of the Blog here.."
-                            onChange={(e) => { setTitle(e.target.value) }}
-                        />
-                    </Row >
+      <div className="section">
+        <form onSubmit={handleSubmit}>
+          <Row label="Title">
+            <input
+              className="input"
+              placeholder="Enter the Title of the Blog here.."
+              value={form.title}
+              onChange={(e) => setForm({ title: e.target.value, content: form.content })}
+              required
+            />
+          </Row>
 
-                    {/* Row component to create a row for Text area field */}
-                    <Row label="Content">
-                        <textarea className="input content"
-                            placeholder="Content of the Blog goes here.."
-                            onChange={(e) => { setContent(e.target.value) }}
+          <Row label="Content">
+            <textarea
+              className="input content"
+              placeholder="Content of the Blog goes here.."
+              value={form.content}
+              onChange={(e) => setForm({ title: form.title, content: e.target.value })}
+              required
+            />
+          </Row>
 
-                        />
-                    </Row >
+          <button className="btn">ADD</button>
+        </form>
+      </div>
 
-                    {/* Button to submit the blog */}
-                    <button className="btn">ADD</button>
-                </form>
+      <hr />
 
-            </div>
-
-            <hr />
-
-            {/* Section where submitted blogs will be displayed */}
-            <h2> Blogs </h2>
-            {blogs.map((blog,i)=>(
-                <div className="blog" key={i}>
-                    <h3>{blog.title}</h3>
-                    <p>{blog.content}</p>
-                </div>
-            ))}
-
-        </>
-    )
+      <h2>Blogs</h2>
+      {blogs.map((blog, i) => (
+        <div className="blog" key={i}>
+          <h3>{blog.title}</h3>
+          <p>{blog.content}</p>
+        </div>
+      ))}
+    </>
+  );
 }
 
-//Row component to introduce a new row section in the form
 function Row(props) {
-    const { label } = props;
-    return (
-        <>
-            <label>{label}<br /></label>
-            {props.children}
-            <hr />
-        </>
-    )
+  const { label } = props;
+  return (
+    <>
+      <label>{label}</label>
+      <br />
+      {props.children}
+      <hr />
+    </>
+  );
 }

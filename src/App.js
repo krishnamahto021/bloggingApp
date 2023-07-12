@@ -3,14 +3,15 @@ import { useEffect,useState } from "react";
 
 function App() {
   // const [{title},{setTitle,setContent}]= useState('');
-  const[title,setTitle]=useState('');
-  const[content,setContent]=useState('');
+  // const[title,setTitle]=useState('');
+  // const[content,setContent]=useState('');
+  const[form,setForm] = useState({title:'',content:''});
   const [blogs,setBlogs] = useState([]);
 
 
   return (
     <>
-      <Blog title={title} setTitle={setTitle} content={content} setContent={setContent} blogs={blogs} setBlogs={setBlogs} />
+      <Blog form={form} setForm={setForm} blogs={blogs} setBlogs={setBlogs} />
     </>
   );
 }
