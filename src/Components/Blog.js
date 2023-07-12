@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
-
+import { useRef } from "react";
 // Blogging App using Hooks
 export default function Blog(props) {
     let { form, setForm, blogs, setBlogs } = props;
+    const titleRef = useRef(null);
 
     function handleSubmit(e) {
         e.preventDefault();
-        setForm({ title: "", content: "" }); // Clear the form state
+        setForm({ title: "", content: "" }); // Clear the form state        
         setBlogs([{ title: form.title, content: form.content }, ...blogs]);
+        titleRef.current.focus();
     }
 
     function deleteBlog(i){
@@ -30,6 +31,7 @@ export default function Blog(props) {
                             className="input"
                             placeholder="Enter the Title of the Blog here.."
                             value={form.title}
+                            ref={titleRef}
                             onChange={(e) => setForm({ title: e.target.value, content: form.content })}
                             required
                         />
