@@ -1,8 +1,19 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 // Blogging App using Hooks
 export default function Blog(props) {
     let { form, setForm, blogs, setBlogs } = props;
     const titleRef = useRef(null);
+
+    useEffect(()=>{
+        titleRef.current.focus(); // to focus on title at initial render
+    },[]);
+
+    // to set the title of the page
+    useEffect(()=>{
+        if(blogs.length){
+            document.title = blogs[0].title;
+        }
+    },[blogs])
 
     function handleSubmit(e) {
         e.preventDefault();
