@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 // Blogging App using Hooks
+
 export default function Blog(props) {
     let { form, setForm, blogs, setBlogs } = props;
     const titleRef = useRef(null);
