@@ -19,6 +19,19 @@ export default function Blog(props) {
     },[blogs]);
 
     // to fetch data from database
+    useEffect(()=>{
+        async function fetchData(){
+            const snapShot = await getDocs(collection(db,'blogs'));
+            const blogs = snapShot.docs.map((doc) => {
+                return {
+                    id:doc.id,
+                    ...doc.data() // doc.data() contains all the array using ... we extracted all the key values pairs
+                }
+            });
+            setBlogs(blogs);
+        }
+        fetchData();
+    },[]);
 
    async function handleSubmit(e) {
         e.preventDefault();
