@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import { getFirestore, collection,doc, getDocs, addDoc, setDoc } from 'firebase/firestore/lite';
+import { db } from "../firebaseInit";
 // Blogging App using Hooks
 
 export default function Blog(props) {
@@ -14,12 +16,25 @@ export default function Blog(props) {
         if(blogs.length){
             document.title = blogs[0].title;
         }
-    },[blogs])
+    },[blogs]);
 
-    function handleSubmit(e) {
+    // to fetch data from database
+
+   async function handleSubmit(e) {
         e.preventDefault();
         setForm({ title: "", content: "" }); // Clear the form state        
         setBlogs([{ title: form.title, content: form.content }, ...blogs]);
+
+        const docRef = doc(collection(db,'blogs'));
+
+        await setDoc(docRef,{
+            title:form.title,
+            content:form.content
+        });
+
+
+
+
         titleRef.current.focus();
     }
 
