@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
-import { getFirestore, collection,doc, getDocs, addDoc, setDoc } from 'firebase/firestore/lite';
+import { getFirestore, collection, doc, getDocs, addDoc, setDoc,onSnapshot} from 'firebase/firestore';
 import { db } from "../firebaseInit";
+
+
 // Blogging App using Hooks
 
 export default function Blog(props) {
@@ -19,9 +21,11 @@ export default function Blog(props) {
     },[blogs]);
 
     // to fetch data from database
+
     useEffect(()=>{
         async function fetchData(){
-            const snapShot = await getDocs(collection(db,'blogs'));
+            const docRef = collection(db,'blogs');
+            const snapShot = await getDocs(docRef);
             const blogs = snapShot.docs.map((doc) => {
                 return {
                     id:doc.id,
@@ -29,25 +33,35 @@ export default function Blog(props) {
                 }
             });
             setBlogs(blogs);
+            // console.log(blogs);
         }
         fetchData();
+
+        // const unsub = onSnapshot(collection(db,'blogs'),(snapShot)=>{
+        //     const blogs = snapShot.docs.map((doc)=>{
+        //         return {
+        //             id:doc.id,
+        //             ...doc.data()
+        //         }
+        //     });
+        //     setBlogs(blogs);
+        // })
+
+
     },[]);
+
+    
+
 
    async function handleSubmit(e) {
         e.preventDefault();
         setForm({ title: "", content: "" }); // Clear the form state        
         setBlogs([{ title: form.title, content: form.content }, ...blogs]);
-
-        const docRef = doc(collection(db,'blogs'));
-
+        const docRef = (collection(db,'blogs'));
         await setDoc(docRef,{
             title:form.title,
             content:form.content
         });
-
-
-
-
         titleRef.current.focus();
     }
 
