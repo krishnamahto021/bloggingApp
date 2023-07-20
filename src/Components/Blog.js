@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { getFirestore, collection, doc, getDocs, addDoc, setDoc,onSnapshot} from 'firebase/firestore';
+import {collection, doc, getDocs, setDoc,deleteDoc,onSnapshot, addDoc} from 'firebase/firestore';
 import { db } from "../firebaseInit";
 
 
@@ -21,33 +21,31 @@ export default function Blog(props) {
     },[blogs]);
 
     // to fetch data from database
-
     useEffect(()=>{
-        async function fetchData(){
-            const docRef = collection(db,'blogs');
-            const snapShot = await getDocs(docRef);
-            const blogs = snapShot.docs.map((doc) => {
-                return {
-                    id:doc.id,
-                    ...doc.data() // doc.data() contains all the array using ... we extracted all the key values pairs
-                }
-            });
-            setBlogs(blogs);
-            // console.log(blogs);
-        }
-        fetchData();
-
-        // const unsub = onSnapshot(collection(db,'blogs'),(snapShot)=>{
-        //     const blogs = snapShot.docs.map((doc)=>{
+        // async function fetchData(){
+        //     const docRef = collection(db,'blogs');
+        //     const snapShot = await getDocs(docRef);
+        //     const blogs = snapShot.docs.map((doc) => {
         //         return {
         //             id:doc.id,
-        //             ...doc.data()
+        //             ...doc.data() // doc.data() contains all the array using ... we extracted all the key values pairs
         //         }
         //     });
         //     setBlogs(blogs);
-        // })
+        //     // console.log(blogs);
+        // }
+        // fetchData();
 
-
+        const docRef = collection(db,'blogs');
+        const unsub = onSnapshot(docRef,(snapShot)=>{
+            const blogs = snapShot.docs.map((doc)=>{
+                return{
+                    id:doc.id,
+                    ...doc.data()
+                }
+            });
+            setBlogs(blogs);
+        })
     },[]);
 
     
@@ -57,7 +55,7 @@ export default function Blog(props) {
         e.preventDefault();
         setForm({ title: "", content: "" }); // Clear the form state        
         setBlogs([{ title: form.title, content: form.content }, ...blogs]);
-        const docRef = (collection(db,'blogs'));
+        const docRef = doc(collection(db,'blogs'));
         await setDoc(docRef,{
             title:form.title,
             content:form.content
@@ -65,12 +63,15 @@ export default function Blog(props) {
         titleRef.current.focus();
     }
 
-    function deleteBlog(i){
+   async function deleteBlog(id){
         // const updatedData = [...blogs];
         // updatedData.splice(i,1);
         // setBlogs(updatedData); 
         
-        setBlogs(blogs.filter((blog,index)=>i!==index));
+        // setBlogs(blogs.filter((blog,index)=>i!==index));
+        
+        const docRef = doc(db,'blogs',id);
+        await deleteDoc(docRef);
     }
 
 
@@ -114,7 +115,7 @@ export default function Blog(props) {
                     <p>{blog.content}</p>
 
                     <div className="blog-btn">
-                        <button className="remove btn" onClick={()=>deleteBlog(i)}>Delete</button>
+                        <button className="remove btn" onClick={()=>deleteBlog(blog.id)}>Delete</button>
                     </div>
                 </div>
             ))}
